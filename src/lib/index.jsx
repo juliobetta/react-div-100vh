@@ -46,7 +46,8 @@ class Div100vh extends React.Component {
   }
 
   render() {
-    return <div ref={this.myRef} {...this.props} />;
+    const { resizeDelay, ...props } = this.props;
+    return <div ref={this.myRef} {...props} />;
   }
 }
 
