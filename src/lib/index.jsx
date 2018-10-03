@@ -13,6 +13,11 @@ class Div100vh extends React.Component {
   // On window resize, recalculate any rvh unit style properties
   computeRvhStyles() {
     const node = this.myRef.current;
+
+    if(!node) {
+      return false;
+    }
+
     let rvhPropertyFound = false;
     Object.entries(this.props.style || {}).forEach(([property, rawValue]) => {
       const match = rvhRegex.exec(rawValue);
