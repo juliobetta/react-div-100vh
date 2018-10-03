@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const rvhRegex = /(\d+(\.\d*)?)rvh\s*$/;
 
@@ -11,11 +12,9 @@ class Div100vh extends React.Component {
 
   // On window resize, recalculate any rvh unit style properties
   computeRvhStyles() {
-    if (!this.props.style) return;
-
     const node = this.myRef.current;
     let rvhPropertyFound = false;
-    Object.entries(this.props.style).forEach(([property, rawValue]) => {
+    Object.entries(this.props.style || {}).forEach(([property, rawValue]) => {
       const match = rvhRegex.exec(rawValue);
       if (match != null) {
         rvhPropertyFound = true;
@@ -31,8 +30,15 @@ class Div100vh extends React.Component {
   }
 
   componentDidMount() {
+    const { resizeDelay } = this.props;
+
     this.computeRvhStyles();
-    window.addEventListener('resize', this.computeRvhStyles);
+
+    window.addEventListener('resize',
+      resizeDelay && (
+        () => setTimeout(this.computeRvhStyles, resizeDelay)
+      ) || this.computeRvhStyles
+    );
   }
 
   componentWillUnmount() {
@@ -43,5 +49,10 @@ class Div100vh extends React.Component {
     return <div ref={this.myRef} {...this.props} />;
   }
 }
+
+Div100vh.propTypes = {
+  resizeDelay: PropTypes.number,
+  style: PropTypes.objectOf(PropTypes.string)
+};
 
 export default Div100vh;
